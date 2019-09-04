@@ -2,6 +2,14 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <PackageLicenseExpression>GPL-3.0-or-later</PackageLicenseExpression>
+    <PackageId>AsanaLibrary</PackageId>
+    <Authors>Attila Köteles</Authors>
+    <Company>Attila Köteles</Company>
+    <Product>AsanaLibrary</Product>
+    <Description>Simple async functions to interact with Asana API</Description>
   </PropertyGroup>
 
   <ItemGroup>
