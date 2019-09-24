@@ -10,9 +10,9 @@ namespace AsanaTest
     {
         // You need to fill these variables with your values!
         const string PersonalAccessToken = "FILL-THIS-OUT";
-        const int WorkspaceId = 0;
-        const int UserToAssign = 0;
-        const int TagId = 0;
+        const string WorkspaceId = "FILL-THIS-OUT";
+        const string UserToAssign = "FILL-THIS-OUT";
+        const string TagId = "FILL-THIS-OUT";
 
         private static Service asanaService;
 
@@ -31,26 +31,26 @@ namespace AsanaTest
         [Fact]
         public void TestCreateTaskAsync()
         {
-            var taskId = HelperCreateTestTask();
-            Assert.True(taskId > 1_000_000);
+            var taskGid = HelperCreateTestTask();
+            Assert.NotEmpty(taskGid);
         }
 
         [Fact]
         public void TestAddTagToTaskAsync()
         {
-            var taskId = HelperCreateTestTask();
-            asanaService.AddTagToTaskAsync(taskId, TagId).Wait();
+            var taskGid = HelperCreateTestTask();
+            asanaService.AddTagToTaskAsync(taskGid, TagId).Wait();
         }
 
         [Fact]
         public void TestAddCommentToTaskAsync()
         {
-            var taskId = HelperCreateTestTask();
-            var commentId = asanaService.AddCommentToTaskAsync(taskId, "This is a test comment").Result;
-            Assert.True(commentId > 1_000_000);
+            var taskGid = HelperCreateTestTask();
+            var commentGid = asanaService.AddCommentToTaskAsync(taskGid, "This is a test comment").Result;
+            Assert.NotEmpty(commentGid);
         }
 
-        private long HelperCreateTestTask()
+        private string HelperCreateTestTask()
         {
             return asanaService.CreateTaskAsync(WorkspaceId, UserToAssign, "Unit test task", "Some notes").Result;
         }

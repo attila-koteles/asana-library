@@ -2,6 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <LangVersion>8.0</LangVersion>
+    <Nullable>enable</Nullable>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageLicenseExpression>GPL-3.0-or-later</PackageLicenseExpression>
@@ -10,6 +12,10 @@
     <Company>Attila Köteles</Company>
     <Product>AsanaLibrary</Product>
     <Description>Simple async functions to interact with Asana API</Description>
+    <Version>2.0.0</Version>
+    <PackageReleaseNotes>Change to string based ID-s</PackageReleaseNotes>
+    <RepositoryUrl>https://github.com/attila-koteles/asana-library</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/attila-koteles/asana-library</PackageProjectUrl>
   </PropertyGroup>
 
   <ItemGroup>

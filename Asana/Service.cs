@@ -33,7 +33,6 @@ namespace Asana
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
 
             client.DefaultRequestHeaders.Add("Authorization", "Bearer " + _personalAccessToken);
-            client.DefaultRequestHeaders.Add("Asana-Disable", "string_ids");
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
             return client;
@@ -50,29 +49,29 @@ namespace Asana
             return users;
         }
 
-        public async Task<long> CreateTaskAsync(long workspaceId, long assignee, string name, string notes)
+        public async Task<string> CreateTaskAsync(string workspaceId, string assignee, string name, string notes)
         {
             var req = new
             {
                 data = new
                 {
                     workspace = workspaceId,
-                    assignee = assignee,
-                    name = name,
-                    notes = notes
+                    assignee,
+                    name,
+                    notes
                 }
             };
 
             var res = _client.PostAsync("tasks", GetJsonContent(req)).Result;
             res.EnsureSuccessStatusCode();
 
-            return GetIdFromResponse(await res.Content.ReadAsStringAsync());
+            return GetGidFromResponse(await res.Content.ReadAsStringAsync());
         }
 
-        public async Task AddTagToTaskAsync(long taskId, long tagId)
+        public async Task AddTagToTaskAsync(string taskGid, string tagId)
         {
             await PostObjectToUrl(
-                $"tasks/{taskId}/addTag",
+                $"tasks/{taskGid}/addTag",
                 new
                 {
                     data = new
@@ -82,15 +81,15 @@ namespace Asana
                 });
         }
 
-        public async Task<long> AddCommentToTaskAsync(long taskId, string text)
+        public async Task<string> AddCommentToTaskAsync(string taskGid, string text)
         {
-            return GetIdFromResponse(await PostObjectToUrl(
-                $"tasks/{taskId}/stories",
+            return GetGidFromResponse(await PostObjectToUrl(
+                $"tasks/{taskGid}/stories",
                 new
                 {
                     data = new
                     {
-                        text = text
+                        text
                     }
                 }));
         }
@@ -107,15 +106,15 @@ namespace Asana
             return await response.Content.ReadAsStringAsync();
         }
 
-        private long GetIdFromResponse(string responseJson)
+        private string GetGidFromResponse(string responseJson)
         {
             var jObj = JObject.Parse(responseJson);
 
-            var id = jObj["data"]["id"].ToString();
-            if (id == null)
-                throw new NullReferenceException("Can't parse service result - no ID returned!");
+            var gid = jObj["data"]["gid"].ToString();
+            if (gid == null)
+                throw new NullReferenceException("Can't parse service result - no gid returned!");
 
-            return long.Parse(id);
+            return gid;
         }
     }
 }
