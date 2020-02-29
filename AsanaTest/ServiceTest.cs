@@ -1,6 +1,7 @@
 ﻿using Asana;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using Xunit;
 
@@ -33,6 +34,14 @@ namespace AsanaTest
         {
             var taskGid = HelperCreateTestTask();
             Assert.NotEmpty(taskGid);
+        }
+
+        [Fact]
+        public void TestAddAttachmentAsync()
+        {
+            var taskGid = HelperCreateTestTask();
+            var bytes = File.ReadAllBytes(@"tplogo.jpg");
+            asanaService.AddAttachmentToTaskAsync(taskGid, bytes, "tplogo_uploaded.jpg", "image/jpeg").Wait();
         }
 
         [Fact]

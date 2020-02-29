@@ -94,14 +94,34 @@ namespace Asana
                 }));
         }
 
+        public async Task<string> AddAttachmentToTaskAsync(string taskGid, byte[] byteContent, string fileName, string contentType)
+        {
+            using var form = new MultipartFormDataContent(Guid.NewGuid().ToString());
+            using var fileContent = new ByteArrayContent(byteContent);
+
+            // Asana API won't detect the content type
+            // If we explicitly set it to an image type "image/jpeg" Asana will generate thumbnails
+            fileContent.Headers.ContentType =
+                    MediaTypeHeaderValue.Parse(contentType);
+
+            // Note! Asana requires us to put "file" and filename in extra quotes!
+            form.Add(fileContent, "\"file\"", $"\"{fileName}\"");
+            var url = $"tasks/{taskGid}/attachments";
+
+            return GetGidFromResponse(await PostContentToUrl(url, form));
+        }
+
         private StringContent GetJsonContent(object obj)
         {
             return new StringContent(JsonConvert.SerializeObject(obj), Encoding.UTF8, "application/json");
         }
 
         private async Task<string> PostObjectToUrl(string url, object obj)
+            => await PostContentToUrl(url, GetJsonContent(obj));
+
+        private async Task<string> PostContentToUrl(string url, HttpContent content)
         {
-            var response = await _client.PostAsync(url, GetJsonContent(obj));
+            var response = await _client.PostAsync(url, content);
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadAsStringAsync();
         }
