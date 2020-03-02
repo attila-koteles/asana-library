@@ -68,6 +68,19 @@ namespace Asana
             return GetGidFromResponse(await res.Content.ReadAsStringAsync());
         }
 
+        public async Task AddProjectToTask(string taskGid, string projectId)
+        {
+            await PostObjectToUrl(
+                $"tasks/{taskGid}/addProject",
+                new
+                {
+                    data = new
+                    {
+                        project = projectId
+                    }
+                });
+        }
+
         public async Task AddTagToTaskAsync(string taskGid, string tagId)
         {
             await PostObjectToUrl(

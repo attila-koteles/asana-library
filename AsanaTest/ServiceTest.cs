@@ -14,6 +14,7 @@ namespace AsanaTest
         const string WorkspaceId = "FILL-THIS-OUT";
         const string UserToAssign = "FILL-THIS-OUT";
         const string TagId = "FILL-THIS-OUT";
+        const string ProjectId = "FILL-THIS-OUT";
 
         private static Service asanaService;
 
@@ -42,6 +43,13 @@ namespace AsanaTest
             var taskGid = HelperCreateTestTask();
             var bytes = File.ReadAllBytes(@"tplogo.jpg");
             asanaService.AddAttachmentToTaskAsync(taskGid, bytes, "tplogo_uploaded.jpg", "image/jpeg").Wait();
+        }
+
+        [Fact]
+        public void TestAddProjectToTaskAsync()
+        {
+            var taskGid = HelperCreateTestTask();
+            asanaService.AddProjectToTask(taskGid, ProjectId).Wait();
         }
 
         [Fact]
