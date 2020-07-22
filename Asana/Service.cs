@@ -13,8 +13,8 @@ namespace Asana
 {
     public class Service
     {
-        private HttpClient _client;
-        private string _personalAccessToken;
+        private readonly HttpClient _client;
+        private readonly string _personalAccessToken;
 
         public Service(string personalAccessToken)
         {
@@ -43,7 +43,9 @@ namespace Asana
             var response = await _client.GetAsync("users");
             response.EnsureSuccessStatusCode();
 
-            var jObject = JObject.Parse(await response.Content.ReadAsStringAsync());
+            var json = await response.Content.ReadAsStringAsync();
+
+            var jObject = JObject.Parse(json);
             var jToken = jObject.GetValue("data");
             List<User> users = (List<User>)jToken.ToObject(typeof(List<User>));
             return users;
@@ -51,7 +53,7 @@ namespace Asana
 
         public async Task<string> CreateTaskAsync(string workspaceId, string assignee, string name, string notes)
         {
-            var req = new
+            var request = new
             {
                 data = new
                 {
@@ -62,11 +64,11 @@ namespace Asana
                 }
             };
 
-            var res = _client.PostAsync("tasks", GetJsonContent(req)).Result;
-            res.EnsureSuccessStatusCode();
-
-            return GetGidFromResponse(await res.Content.ReadAsStringAsync());
+            return await CreateTaskAsync(request);
         }
+
+        public async Task<string> CreateTaskAsync(object request)
+            => GetGidFromResponse(await PostObjectToUrl("tasks", request));
 
         public async Task AddProjectToTask(string taskGid, string projectId)
         {

@@ -38,6 +38,27 @@ namespace AsanaTest
         }
 
         [Fact]
+        public void TestCreateComplexTaskAsync()
+        {
+            var request = new
+            {
+                data = new
+                {
+                    workspace = WorkspaceId,
+                    assignee = UserToAssign,
+                    name = "Complex task test",
+                    notes = "These are task notes",
+                    due_on = "2020-07-26",
+                    projects = new[] { "11238705598188" },
+                    tags = new[] { "8368374567647" }
+                }
+            };
+
+            var taskGid = asanaService.CreateTaskAsync(request).Result;
+            Assert.NotEmpty(taskGid);
+        }
+
+        [Fact]
         public void TestAddAttachmentAsync()
         {
             var taskGid = HelperCreateTestTask();

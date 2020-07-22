@@ -11,13 +11,13 @@
     <Authors>Attila Köteles</Authors>
     <Company>Attila Köteles</Company>
     <Product>AsanaLibrary</Product>
-    <Description>Simple async functions to interact with Asana API</Description>
-    <Version>2.0.2</Version>
-    <PackageReleaseNotes>Change to string based ID-s</PackageReleaseNotes>
+    <Description>Simple library for Asana interaction</Description>
+    <Version>2.1.0</Version>
+    <PackageReleaseNotes>Possible to create tasks with anonym objects</PackageReleaseNotes>
     <RepositoryUrl>https://github.com/attila-koteles/asana-library</RepositoryUrl>
     <PackageProjectUrl>https://github.com/attila-koteles/asana-library</PackageProjectUrl>
-    <AssemblyVersion>2.0.2.0</AssemblyVersion>
-    <FileVersion>2.0.2.0</FileVersion>
+    <AssemblyVersion>2.1.0.0</AssemblyVersion>
+    <FileVersion>2.1.0.0</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
