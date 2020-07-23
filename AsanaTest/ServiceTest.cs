@@ -1,8 +1,10 @@
 ﻿using Asana;
+using Asana.Mapping;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace AsanaTest
@@ -35,6 +37,25 @@ namespace AsanaTest
         {
             var taskGid = HelperCreateTestTask();
             Assert.NotEmpty(taskGid);
+        }
+
+        [Fact]
+        public async Task TestTypeAheadSearch()
+        {
+            TypeAheadResult[] results;
+
+            results = await asanaService.TypeAheadSearch(WorkspaceId, "user", "Attila Köteles");
+            Assert.Single(results);
+            Assert.Equal("Attila Köteles", results[0].Name);
+            Assert.Equal("255545193380", results[0].Gid);
+
+            results = await asanaService.TypeAheadSearch(WorkspaceId, "tag", "Canal Digital");
+            Assert.Single(results);
+            Assert.Equal("canal digital", results[0].Name);
+            Assert.Equal("11335945644051", results[0].Gid);
+
+            results = await asanaService.TypeAheadSearch(WorkspaceId, "tag", "Siketfajd");
+            Assert.Empty(results);
         }
 
         [Fact]

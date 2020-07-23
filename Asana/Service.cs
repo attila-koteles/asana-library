@@ -1,4 +1,5 @@
 ﻿using Asana.Mapping;
+using Microsoft.AspNetCore.WebUtilities;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -69,6 +70,24 @@ namespace Asana
 
         public async Task<string> CreateTaskAsync(object request)
             => GetGidFromResponse(await PostObjectToUrl("tasks", request));
+
+        public async Task<TypeAheadResult[]> TypeAheadSearch(string workspaceId, string resourceType, string query)
+        {
+            var url = QueryHelpers.AddQueryString(
+                $"workspaces/{workspaceId}/typeahead",
+                new Dictionary<string, string>
+                {
+                    { "resource_type", resourceType },
+                    { "query", query }
+                });
+
+            var response = await _client.GetAsync(url);
+            response.EnsureSuccessStatusCode();
+            var responseJson = await response.Content.ReadAsStringAsync();
+
+            var jObj = JObject.Parse(responseJson);
+            return jObj["data"].ToObject<TypeAheadResult[]>();
+        }
 
         public async Task AddProjectToTask(string taskGid, string projectId)
         {
