@@ -44,9 +44,9 @@ namespace AsanaTest
         {
             TypeAheadResult[] results;
 
-            results = await asanaService.TypeAheadSearch(WorkspaceId, "user", "Attila Köteles");
+            results = await asanaService.TypeAheadSearch(WorkspaceId, "user", "Attila Koteles");
             Assert.Single(results);
-            Assert.Equal("Attila Köteles", results[0].Name);
+            Assert.Equal("Attila Koteles", results[0].Name);
             Assert.Equal("255545193380", results[0].Gid);
 
             results = await asanaService.TypeAheadSearch(WorkspaceId, "tag", "Canal Digital");
