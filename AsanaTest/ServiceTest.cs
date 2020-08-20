@@ -1,9 +1,5 @@
 ﻿using Asana;
-using Asana.Mapping;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -29,7 +25,7 @@ namespace AsanaTest
         public void TestGetUsersAsync()
         {
             var users = asanaService.GetUsersAsync().Result;
-            Assert.True(users.Count > 0);
+            Assert.True(users.Length > 0);
         }
 
         [Fact]
@@ -40,9 +36,16 @@ namespace AsanaTest
         }
 
         [Fact]
+        public async Task TestGetTasksInProject()
+        {
+            var results = await asanaService.GetTasksInProject(ProjectId);
+            Assert.True(results.Length > 0);
+        }
+
+        [Fact]
         public async Task TestTypeAheadSearch()
         {
-            TypeAheadResult[] results;
+            ObjectResult[] results;
 
             results = await asanaService.TypeAheadSearch(WorkspaceId, "user", "Attila Koteles");
             Assert.Single(results);

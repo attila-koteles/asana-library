@@ -1,5 +1,4 @@
-﻿using Asana.Mapping;
-using Microsoft.AspNetCore.WebUtilities;
+﻿using Microsoft.AspNetCore.WebUtilities;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -14,13 +13,13 @@ namespace Asana
 {
     public class Service
     {
-        private readonly HttpClient _client;
+        public HttpClient HttpClient { get; }
         private readonly string _personalAccessToken;
 
         public Service(string personalAccessToken)
         {
             _personalAccessToken = personalAccessToken;
-            _client = CreateClient();
+            HttpClient = CreateClient();
         }
 
         private HttpClient CreateClient()
@@ -37,19 +36,6 @@ namespace Asana
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
             return client;
-        }
-
-        public async Task<List<User>> GetUsersAsync()
-        {
-            var response = await _client.GetAsync("users");
-            response.EnsureSuccessStatusCode();
-
-            var json = await response.Content.ReadAsStringAsync();
-
-            var jObject = JObject.Parse(json);
-            var jToken = jObject.GetValue("data");
-            List<User> users = (List<User>)jToken.ToObject(typeof(List<User>));
-            return users;
         }
 
         public async Task<string> CreateTaskAsync(string workspaceId, string assignee, string name, string notes)
@@ -71,7 +57,7 @@ namespace Asana
         public async Task<string> CreateTaskAsync(object request)
             => GetGidFromResponse(await PostObjectToUrl("tasks", request));
 
-        public async Task<TypeAheadResult[]> TypeAheadSearch(string workspaceId, string resourceType, string query)
+        public async Task<ObjectResult[]> TypeAheadSearch(string workspaceId, string resourceType, string query)
         {
             var url = QueryHelpers.AddQueryString(
                 $"workspaces/{workspaceId}/typeahead",
@@ -81,12 +67,19 @@ namespace Asana
                     { "query", query }
                 });
 
-            var response = await _client.GetAsync(url);
-            response.EnsureSuccessStatusCode();
-            var responseJson = await response.Content.ReadAsStringAsync();
+            return await GetResultsFromUrl(url);
+        }
 
-            var jObj = JObject.Parse(responseJson);
-            return jObj["data"].ToObject<TypeAheadResult[]>();
+        public async Task<ObjectResult[]> GetUsersAsync()
+            => await GetResultsFromUrl("users");
+
+        public async Task<ObjectResult[]> GetTasksInProject(string projectId)
+            => await GetResultsFromUrl($"projects/{projectId}/tasks");
+
+        public async Task<ObjectResult[]> GetResultsFromUrl(string url)
+        {
+            var responseJson = await GetUrl(url);
+            return JsonToObjectResults(responseJson);
         }
 
         public async Task AddProjectToTask(string taskGid, string projectId)
@@ -145,17 +138,28 @@ namespace Asana
             return GetGidFromResponse(await PostContentToUrl(url, form));
         }
 
-        private StringContent GetJsonContent(object obj)
+        private ObjectResult[] JsonToObjectResults(string json)
         {
-            return new StringContent(JsonConvert.SerializeObject(obj), Encoding.UTF8, "application/json");
+            var jObj = JObject.Parse(json);
+            return jObj["data"].ToObject<ObjectResult[]>();
         }
 
-        private async Task<string> PostObjectToUrl(string url, object obj)
+        private StringContent GetJsonContent(object obj) =>
+            new StringContent(JsonConvert.SerializeObject(obj), Encoding.UTF8, "application/json");
+
+        public async Task<string> GetUrl(string url)
+        {
+            var response = await HttpClient.GetAsync(url);
+            response.EnsureSuccessStatusCode();
+            return await response.Content.ReadAsStringAsync();
+        }
+
+        public async Task<string> PostObjectToUrl(string url, object obj)
             => await PostContentToUrl(url, GetJsonContent(obj));
 
-        private async Task<string> PostContentToUrl(string url, HttpContent content)
+        public async Task<string> PostContentToUrl(string url, HttpContent content)
         {
-            var response = await _client.PostAsync(url, content);
+            var response = await HttpClient.PostAsync(url, content);
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadAsStringAsync();
         }

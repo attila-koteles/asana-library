@@ -1,11 +1,8 @@
 ﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace Asana.Mapping
+namespace Asana
 {
-    public class TypeAheadResult
+    public class ObjectResult
     {
         [JsonProperty("gid")]
         public string Gid { get; set; } = "";

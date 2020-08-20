@@ -12,12 +12,12 @@
     <Company>Attila Köteles</Company>
     <Product>AsanaLibrary</Product>
     <Description>Simple library for Asana interaction</Description>
-    <Version>2.1.1</Version>
-    <PackageReleaseNotes>TypeAhead search features added</PackageReleaseNotes>
+    <Version>2.2.0</Version>
+    <PackageReleaseNotes>Refactoring + more utility functions public + getting list of tasks in a project</PackageReleaseNotes>
     <RepositoryUrl>https://github.com/attila-koteles/asana-library</RepositoryUrl>
     <PackageProjectUrl>https://github.com/attila-koteles/asana-library</PackageProjectUrl>
-    <AssemblyVersion>2.1.1.0</AssemblyVersion>
-    <FileVersion>2.1.1.0</FileVersion>
+    <AssemblyVersion>2.2.0.0</AssemblyVersion>
+    <FileVersion>2.2.0.0</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
